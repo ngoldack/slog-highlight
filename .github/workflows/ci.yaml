@@ -17,10 +17,7 @@ jobs:
         with:
           go-version: ">=1.21"
 
-      - name: Install Dagger
-        run: go get dagger.io/dagger@latest
-
       - name: Run Dagger
         env:
           CI: true
-        run: dagger run go run ci/ci.go
+        run: go run dagger.io/dagger@latest go run ci/ci.go
