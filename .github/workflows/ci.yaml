@@ -21,3 +21,8 @@ jobs:
         env:
           CI: true
         run: go run dagger.io/dagger@latest go run ci/ci.go
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
