@@ -25,7 +25,7 @@ var _ slog.Handler = (*HighlightHandler)(nil)
 
 // NewHighlightHandler creates a new HighlightHandler.
 // Default level is LevelInfo.
-func NewHighlightHandler(options ...HighlightHandlerOption) *HighlightHandler {
+func NewHighlightHandler(options ...HighlightHandlerOption) slog.Handler {
 	h := &HighlightHandler{
 		level: slog.LevelInfo,
 	}
