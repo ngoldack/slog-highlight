@@ -1,2 +1,4 @@
 coverage.txt
 go.work*
+.env
+!.env.example
