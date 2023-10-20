@@ -41,9 +41,9 @@ func test(ctx context.Context, client *dagger.Client, cache *dagger.CacheVolume)
 	c = c.WithMountedCache("/go/pkg/mod", cache)
 
 	if ci, ok := ctx.Value(CI).(bool); ok && ci {
-		c = c.WithExec([]string{"go", "test", "-v", "-coverprofile=coverage.txt", "-covermode=atomic", "./..."})
+		c = c.WithExec([]string{"go", "test", "-race", "-v", "-coverprofile=coverage.txt", "-covermode=atomic", "./..."})
 	} else {
-		c = c.WithExec([]string{"go", "test", "-v", "./..."})
+		c = c.WithExec([]string{"go", "test", "-race", "-v", "./..."})
 	}
 
 	// copy coverage.txt back

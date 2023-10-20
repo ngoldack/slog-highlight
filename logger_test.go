@@ -3,7 +3,10 @@ package sloghighlight_test
 import (
 	"context"
 	"log/slog"
+	"math/rand"
+	"runtime"
 	"testing"
+	"time"
 
 	sloghighlight "github.com/ngoldack/slog-highlight"
 	"github.com/stretchr/testify/require"
@@ -50,31 +53,36 @@ func TestHandle(t *testing.T) {
 		user: "test",
 	}
 
-	ctx = context.WithValue(ctx, uk, uv)
+	pcs := createPCs(t)
+	records := make([]slog.Record, 0, len(pcs))
+	for _, pc := range pcs {
+		r := slog.NewRecord(time.Now(), slog.LevelDebug, "Hello Debug!", pc)
+		r.AddAttrs(slog.Attr{
+			Key:   "test",
+			Value: slog.StringValue("test"),
+		})
 
-	records := []slog.Record{
-		{
-			Level:   slog.LevelDebug,
-			Message: "Hello Debug!",
-			PC:      0,
-		},
-		{
-			Level:   slog.LevelInfo,
-			Message: "Hello World!",
-			PC:      0,
-		},
-		{
-			Level:   slog.LevelWarn,
-			Message: "Hello Warn!",
-			PC:      0,
-		},
-		{
-			Level:   slog.LevelError,
-			Message: "Hello Error!",
-			PC:      0,
-		},
+		switch rand.Intn(4) % 4 {
+		case 0:
+			r.Level = slog.LevelDebug
+			records = append(records, r)
+			continue
+		case 1:
+			r.Level = slog.LevelInfo
+			records = append(records, r)
+			continue
+		case 2:
+			r.Level = slog.LevelWarn
+			records = append(records, r)
+			continue
+		case 3:
+			r.Level = slog.LevelError
+			records = append(records, r)
+			continue
+		}
 	}
 
+	ctx = context.WithValue(ctx, uk, uv)
 	for _, r := range records {
 		err := handler.Handle(ctx, r)
 		require.NoError(t, err, "handler should not return an error")
@@ -98,4 +106,13 @@ func TestWithAttrs(t *testing.T) {
 	})
 
 	require.NotNil(t, handler, "handler should not be nil")
+}
+
+func createPCs(t *testing.T) []uintptr {
+	pc := make([]uintptr, 100)
+	n := runtime.Callers(0, pc)
+	if n == 0 {
+		t.Fatal("could not get PC")
+	}
+	return pc[:n]
 }

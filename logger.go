@@ -42,6 +42,7 @@ func (h *HighlightHandler) Enabled(_ context.Context, level slog.Level) bool {
 
 // Handle handles the record.
 func (h *HighlightHandler) Handle(ctx context.Context, r slog.Record) error {
+	// TODO: add span to context
 	span, _ := highlight.StartTrace(ctx, "highlight-go/log")
 	defer highlight.EndTrace(span)
 
@@ -70,7 +71,7 @@ func (h *HighlightHandler) Handle(ctx context.Context, r slog.Record) error {
 
 	attrs = append(attrs, attribute.Key("groups").StringSlice(h.groups))
 
-	span.AddEvent(highlight.LogEvent, trace.WithAttributes(attrs...))
+	span.AddEvent(highlight.LogEvent, trace.WithAttributes(attrs...), trace.WithTimestamp(r.Time))
 
 	if r.Level <= slog.LevelError {
 		span.SetStatus(codes.Error, r.Message)
