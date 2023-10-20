@@ -42,7 +42,6 @@ func (h *HighlightHandler) Enabled(_ context.Context, level slog.Level) bool {
 
 // Handle handles the record.
 func (h *HighlightHandler) Handle(ctx context.Context, r slog.Record) error {
-	// TODO: add span to context
 	span, _ := highlight.StartTrace(ctx, "highlight-go/log")
 	defer highlight.EndTrace(span)
 
