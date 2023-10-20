@@ -10,3 +10,10 @@ func WithLevel(level slog.Leveler) HighlightHandlerOption {
 		return nil
 	}
 }
+
+func WithLevelFunc(levelFunc func() slog.Leveler) HighlightHandlerOption {
+	return func(h *HighlightHandler) error {
+		h.level = levelFunc()
+		return nil
+	}
+}

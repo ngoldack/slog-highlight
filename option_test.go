@@ -17,3 +17,13 @@ func TestWithLevel(t *testing.T) {
 	require.NotNil(t, handler, "handler should not be nil")
 	require.True(t, handler.Enabled(ctx, slog.LevelDebug), "handler should be enabled")
 }
+
+func TestWithLevelFunc(t *testing.T) {
+	ctx := context.Background()
+	handler := sloghighlight.NewHighlightHandler(sloghighlight.WithLevelFunc(func() slog.Leveler {
+		return slog.LevelDebug
+	}))
+
+	require.NotNil(t, handler, "handler should not be nil")
+	require.True(t, handler.Enabled(ctx, slog.LevelDebug), "handler should be enabled")
+}
